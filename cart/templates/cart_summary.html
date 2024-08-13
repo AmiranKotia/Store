@@ -1,0 +1,147 @@
+{% extends 'base.html' %} {% block content %}
+<header class="bg-dark py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="text-center text-white">
+      <h1 class="display-4 fw-bolder">Shopping Cart</h1>
+      <br>
+    </div>
+  </div>
+</header>
+<br />
+<div class="container">
+  {% if cart_products%}   
+  <p style="font-weight: bold; font-size: large; text-decoration: underline;">Total: <i class="fa-solid fa-dollar-sign"></i>{{ totals }}</p>
+  {% for product in cart_products %}
+  <div
+    class="card mb-3"
+    style="
+      min-height: 435px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
+    <div class="row g-0" style="justify-content: center; align-items: center">
+      <div class="col-md-4">
+        <img
+          src="{{ product.image.url }}"
+          class="img-fluid rounded-start"
+          alt="..."
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <br />
+          <p class="card-text">{{ product.description }}</p>
+
+          {% if product.is_sale %}
+          <br /><br />
+          <p style="font-weight: bold; margin-bottom: 0px; color: rgb(200, 0, 0)">Item on sale</p>
+          <strike style="color: rgba(128, 128, 128, 0.74)"
+            >${{ product.price }}</strike
+          >
+          <br />
+          ${{ product.sale_price }} {% else %}<br /><br />
+          ${{ product.price }} {% endif %}
+          <br /><br />
+          <div
+            class="row"
+            style="display: flex; flex-direction: column; margin-top: -10px"
+          >
+            <div class="col-md-2">Quantity:</div>
+            <div class="col-md-2">
+              <select class="form-select" id="select{{ product.id }}">
+                {% for key, value in quantities.items %}
+                  {% if key == product.id|slugify %}
+                    <option selected>{{ value }}</option>
+                  {% endif %} 
+                {% endfor %}
+
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <br />
+        
+          <div
+            class="home_cart"
+            style="display: flex; justify-content: space-between"
+          >
+            <button
+              type="button"
+              data-index="{{ product.id }}"
+              class="btn btn-secondary update_cart"
+            >
+              Update quantity
+            </button>
+            <button type="button" data-index="{{ product.id }}" class="btn btn-danger delete-product"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  {% endfor %} 
+ 
+  {% else %}
+  <br>
+  <center>
+    <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Your cart is empty" style="width: 352px;">
+  </center>
+  <br /><br /><br>
+  {% endif %}
+</div>
+<br />
+
+<script>
+  $(document).on("click", ".update_cart", function (e) {
+    e.preventDefault();
+    var productid = $(this).data("index");
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart_update' %}",
+      data: {
+        product_id: $(this).data("index"),
+        product_qty: $("#select" + productid + " option:selected").text(),
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action: "post",
+      },
+
+      success: function (json) {
+        location.reload();
+      },
+
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+
+
+  $(document).on("click", ".delete-product", function (e) {
+    e.preventDefault();
+    // var productid = $(this).data("index");
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart_delete' %}",
+      data: {
+        product_id: $(this).data("index"),
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action: "post",
+      },
+
+      success: function (json) {
+        location.reload();
+      },
+
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+  
+</script>
+
+</script>
+{% endblock %}

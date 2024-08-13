@@ -1,0 +1,94 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <br /><br /><br /><br /><br /><br /><br />
+  <div
+    class="card mb-3"
+    style="
+      min-height: 435px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    "
+  >
+    <div class="row g-0" style="justify-content: center; align-items: center">
+      <div class="col-md-4">
+        <img
+          src="{{ product.image.url }}"
+          class="img-fluid rounded-start"
+          alt="..."
+        />
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <br />
+          <p class="card-text">{{ product.description }}</p>
+
+          {% if product.is_sale %}
+
+          <p style="font-weight: bold; margin-bottom: 0px; color: rgb(200, 0, 0);">Item on sale</p>
+          <strike style="color: rgba(128, 128, 128, 0.74)"
+            >${{ product.price }}</strike
+          >
+          <br />
+          ${{ product.sale_price }} {% else %}<br />
+          ${{ product.price }} {% endif %}
+          <br />
+          <br />
+          <div
+            class="row"
+            style="display: flex; flex-direction: column; margin-top: -10px"
+          >
+            <div class="col-md-2">Quantity:</div>
+            <div class="col-md-2">
+              <select class="form-select" id="qty-cart">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+          </div>
+          <br /><br />
+          <div
+            class="home_cart"
+            style="display: flex; justify-content: space-between"
+          >
+            <button
+              value="{{ product.id }}"
+              class="btn btn-success"
+              id="add_cart"
+            >
+              Add to Cart
+            </button>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br /><br /><br /><br /><br /><br /><br />
+</div>
+
+<script>
+  $(document).on("click", "#add_cart", function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'cart_add' %}",
+      data: {
+        product_id: $("#add_cart").val(),
+        product_qty: $("#qty-cart option:selected").text(),
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        action: "post",
+      },
+      success: function (json) {
+        document.getElementById("cart_quantity").textContent = json.qty;
+        location.reload();
+      },
+      error: function (xhr, errmsg, err) {},
+    });
+  });
+</script>
+{% endblock %}
