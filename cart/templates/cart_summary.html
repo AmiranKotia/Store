@@ -9,8 +9,11 @@
 </header>
 <br />
 <div class="container">
-  {% if cart_products%}   
+  {% if cart_products%}
+  <div class="checkout-price" style="display: flex; justify-content: space-between; align-items: center;">
   <p style="font-weight: bold; font-size: large; text-decoration: underline;">Total: <i class="fa-solid fa-dollar-sign"></i>{{ totals }}</p>
+  <a href="{% url 'checkout' %}" class="btn btn-success" style="margin-top: -16px;">Checkout</a>
+  </div>
   {% for product in cart_products %}
   <div
     class="card mb-3"

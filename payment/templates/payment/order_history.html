@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+      <div class="text-center text-white">
+        <h1 class="display-4 fw-bolder">Order History</h1>
+      </div>
+    </div>
+  </header>
+  <br>
+<div class="container my-5" style="min-height: 37%;">
+    {% if orders %}
+    <table class="table table-striped table-hover table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Order Number</th>
+            <th scope="col">Amount Paid</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Email Address</th>
+            <th scope="col">Shipping Address</th>
+            <th scope="col">Order Date</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in orders %}
+          <tr>
+            <td><a href="{% url 'orders' item.id %}" style="text-decoration: none; font-weight: bold;">{{ item.id }}</a></td>
+            <td>$ {{ item.amount_paid }}</td>
+            <td>{{ item.full_name }}</td>
+            <td>{{ item.email }}</td>
+            <td><pre>{{ item.shipping_address }}</pre></td>
+            <td>{{ item.date_ordered }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+    <center>
+        <img src="https://cdni.iconscout.com/illustration/premium/thumb/carro-vacio-11941565-9741053.png?f=webp" alt="Your cart is empty" style="width: 352px;">
+    </center>
+    {% endif %}
+</div>
+<br><br>
+{% endblock %}

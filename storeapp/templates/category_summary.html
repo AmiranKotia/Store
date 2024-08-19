@@ -13,9 +13,9 @@
   <div class="row">
     <center>
       <div class="col-8" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-        <br><br>
+        <br>
         {% for category in categories %}
-        <a href="{% url 'category' category %}" style="text-decoration: none; color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));"><h5>{{ category }}</h5></a>
+        <a href="{% url 'category' category %}" style="text-decoration: none; color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity));"><h4>{{ category }}</h4></a>
         {% endfor %}
         <br><br>
       </div>
